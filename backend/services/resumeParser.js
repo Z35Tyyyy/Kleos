@@ -1,6 +1,6 @@
 'use strict';
 
-const { callGeminiJSON } = require('../utils/geminiClient');
+const { callLLMJSON } = require('../utils/llmClient');
 const { getPrompt }      = require('../utils/promptLoader');
 const logger             = require('../utils/logger');
 
@@ -12,7 +12,7 @@ const logger             = require('../utils/logger');
 async function parseResume(resumeText) {
   logger.info('Parsing resume…');
   const prompt = getPrompt('resumeParser', { RESUME_TEXT: resumeText });
-  const parsed = await callGeminiJSON(prompt);
+  const parsed = await callLLMJSON(prompt);
   logger.info('Resume parsed successfully');
   return parsed;
 }

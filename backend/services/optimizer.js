@@ -1,6 +1,6 @@
 'use strict';
 
-const { callGeminiJSON } = require('../utils/geminiClient');
+const { callLLMJSON } = require('../utils/llmClient');
 const { getPrompt }      = require('../utils/promptLoader');
 const logger             = require('../utils/logger');
 
@@ -18,7 +18,7 @@ async function optimizeResume(parsedResume, gapAnalysis, targetKeywords) {
     GAP_ANALYSIS   : gapAnalysis,
     TARGET_KEYWORDS: targetKeywords,
   });
-  const result = await callGeminiJSON(prompt);
+  const result = await callLLMJSON(prompt);
   logger.info(`Resume optimised — ${result.keywords_added?.length || 0} keywords added`);
   return result;
 }

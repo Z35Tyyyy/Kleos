@@ -1,6 +1,6 @@
 'use strict';
 
-const { callGeminiJSON } = require('../utils/geminiClient');
+const { callLLMJSON } = require('../utils/llmClient');
 const { getPrompt }      = require('../utils/promptLoader');
 const logger             = require('../utils/logger');
 
@@ -16,7 +16,7 @@ async function analyzeGaps(parsedResume, parsedJD) {
     PARSED_RESUME: parsedResume,
     PARSED_JD    : parsedJD,
   });
-  const result = await callGeminiJSON(prompt);
+  const result = await callLLMJSON(prompt);
   logger.info(`Gap analysis complete — match: ${result.match_percentage}%`);
   return result;
 }

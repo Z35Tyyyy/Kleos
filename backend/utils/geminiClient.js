@@ -19,8 +19,8 @@ function getGenAI() {
 }
 
 const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
-const MAX_RETRIES   = parseInt(process.env.LLM_RETRY_ATTEMPTS, 10) || 3;
-const BASE_DELAY    = parseInt(process.env.LLM_RETRY_DELAY_MS, 10) || 1000;
+const MAX_RETRIES = parseInt(process.env.LLM_RETRY_ATTEMPTS, 10) || 3;
+const BASE_DELAY = parseInt(process.env.LLM_RETRY_DELAY_MS, 10) || 1000;
 
 /**
  * Send a prompt to Gemini and return the raw text response.
@@ -50,7 +50,7 @@ async function callGemini({ system, user }, opts = {}) {
 
       logger.debug(`Gemini call (attempt ${attempt}/${MAX_RETRIES}) → ${modelName} [key index: ${currentKeyIndex}]`);
       const result = await model.generateContent(user);
-      const text   = result.response.text();
+      const text = result.response.text();
       return text;
     } catch (err) {
       lastError = err;
@@ -79,7 +79,7 @@ async function callGeminiJSON(prompt, opts = {}) {
 
   for (let attempt = 1; attempt <= JSON_RETRIES; attempt++) {
     const raw = await callGemini(prompt, { ...opts, jsonMode: true });
-    
+
     // Strip ```json ... ``` wrappers
     const cleaned = raw.replace(/```(?:json)?\s*/gi, '').replace(/```\s*$/g, '').trim();
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const { callGeminiJSON } = require('../utils/geminiClient');
+const { callLLMJSON } = require('../utils/llmClient');
 const { getPrompt }      = require('../utils/promptLoader');
 const logger             = require('../utils/logger');
 
@@ -18,7 +18,7 @@ async function generateCoverLetter(candidateSummary, parsedJD, gapAnalysis) {
     PARSED_JD        : parsedJD,
     GAP_ANALYSIS     : gapAnalysis,
   });
-  const result = await callGeminiJSON(prompt);
+  const result = await callLLMJSON(prompt);
   logger.info('Cover letter generated');
   return result;
 }
