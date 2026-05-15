@@ -60,17 +60,30 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// ─── Frontend Serving ─────────────────────────────────────────────────────────
+// ─── Frontend Serving (Optional) ─────────────────────────────────────────────
 const path = require('path');
-app.use(express.static(path.join(__dirname, 'frontend/dist')));
+const fs   = require('fs');
+const frontendDistPath = path.join(__dirname, 'frontend/dist');
 
-// SPA fallback for frontend routing
-app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/api') || req.path.startsWith('/auth')) {
-    return next();
-  }
-  res.sendFile(path.join(__dirname, 'frontend/dist', 'index.html'));
-});
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  
+  // SPA fallback for frontend routing
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/auth') || req.path === '/health') {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+} else {
+  // Production fallback when backend and frontend are separate
+  app.get('/', (_req, res) => {
+    res.json({ 
+      message: 'AI Resume Optimizer API is running.',
+      frontend: process.env.FRONTEND_URL || 'Not configured'
+    });
+  });
+}
 
 // 404 Handler
 app.use((_req, res) => {
