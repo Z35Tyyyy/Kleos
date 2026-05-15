@@ -132,6 +132,7 @@ const Landing = () => {
                         <p className="text-[11px] uppercase tracking-[0.3em] text-on-surface-variant">© 2026 Kleos AI. Carved from Smoke.</p>
                     </div>
                     <div className="flex space-x-12">
+                        <Link className="text-[11px] uppercase tracking-[0.3em] text-on-surface-variant hover:text-primary transition-all" to="/status">System Status</Link>
                         <a className="text-[11px] uppercase tracking-[0.3em] text-on-surface-variant hover:text-primary transition-all" href="#">Privacy</a>
                         <a className="text-[11px] uppercase tracking-[0.3em] text-on-surface-variant hover:text-primary transition-all" href="#">Terms</a>
                         <a className="text-[11px] uppercase tracking-[0.3em] text-on-surface-variant hover:text-primary transition-all" href="#">Contact</a>
