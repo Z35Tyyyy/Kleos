@@ -57,6 +57,8 @@ app.get('/health', (_req, res) => {
     service  : 'AI Resume Optimizer',
     version  : '1.0.0',
     timestamp: new Date().toISOString(),
+    frontend : process.env.FRONTEND_URL || 'Not configured',
+    env      : process.env.NODE_ENV || 'development'
   });
 });
 
@@ -121,8 +123,11 @@ async function start() {
   await connectDB();
 
   app.listen(PORT, () => {
-    logger.info(`🚀 AI Resume Optimizer running on http://localhost:${PORT}`);
-    logger.info(`📄 Health check: http://localhost:${PORT}/health`);
+    const mode = process.env.NODE_ENV || 'development';
+    const url  = mode === 'production' ? 'Render Service' : `http://localhost:${PORT}`;
+    
+    logger.info(`🚀 AI Resume Optimizer [${mode}] running on ${url}`);
+    logger.info(`📄 Frontend: ${process.env.FRONTEND_URL || 'Not set'}`);
     logger.info(`🔑 Gemini model: ${process.env.GEMINI_MODEL || 'gemini-2.0-flash'}`);
   });
 }
