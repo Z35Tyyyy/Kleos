@@ -3,8 +3,10 @@ const getAuthHeaders = () => {
     return token ? { 'Authorization': `Bearer ${token}` } : {};
 };
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
 export const login = async (email, password) => {
-    const response = await fetch('/auth/login', {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -15,7 +17,7 @@ export const login = async (email, password) => {
 };
 
 export const register = async (name, email, password) => {
-    const response = await fetch('/auth/register', {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
@@ -26,7 +28,7 @@ export const register = async (name, email, password) => {
 };
 
 export const logout = async () => {
-    const response = await fetch('/auth/logout', {
+    const response = await fetch(`${API_BASE_URL}/auth/logout`, {
         method: 'POST',
         headers: getAuthHeaders()
     });

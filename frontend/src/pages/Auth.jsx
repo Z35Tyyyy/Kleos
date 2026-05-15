@@ -140,7 +140,7 @@ const Auth = () => {
                     </div>
 
                     <a 
-                        href="/auth/google" 
+                        href={`${import.meta.env.VITE_API_URL || ''}/auth/google`}
                         className="w-full py-4 bg-surface-container-high border border-outline-variant/10 text-on-surface font-bold rounded-xl flex items-center justify-center gap-3 hover:bg-surface-container-highest transition-colors"
                     >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
