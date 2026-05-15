@@ -142,7 +142,7 @@ async function start() {
 
   app.listen(PORT, () => {
     const mode = process.env.NODE_ENV || 'development';
-    const url  = mode === 'production' ? 'Render Service' : `http://localhost:${PORT}`;
+    const url  = mode === 'production' ? process.env.RENDER_EXTERNAL_URL || 'Production URL' : `http://localhost:${PORT}`;
     
     logger.info(`🚀 AI Resume Optimizer [${mode}] running on ${url}`);
     logger.info(`📄 Frontend: ${process.env.FRONTEND_URL || 'Not set'}`);
