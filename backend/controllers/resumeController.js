@@ -23,7 +23,11 @@ const OptimizationResult = require('../models/OptimizationResult');
 async function optimizeResumeHandler(req, res, next) {
   try {
     const { resume_text, include_cover_letter = false } = req.body;
-    const job_description = req.body.job_description || req.body.jobDescription || 'General Industry Professional Role. Optimize resume for general industry best practices without a specific target.';
+    const raw_jd = req.body.job_description || req.body.jobDescription;
+    const isGeneral = !raw_jd || raw_jd.trim().length < 10;
+    const job_description = isGeneral 
+      ? "GENERAL_OPTIMIZATION_REQUEST: No specific job description provided. Evaluate based on general resume standards and industry best practices for the candidate's field."
+      : raw_jd;
 
     if (!resume_text) {
       return res.status(400).json({
@@ -39,6 +43,7 @@ async function optimizeResumeHandler(req, res, next) {
 
     // 2. Analyse job description
     const parsedJD = await analyzeJD(job_description);
+    if (isGeneral) parsedJD.isGeneral = true;
 
     // 3. Gap analysis
     const gapAnalysis = await analyzeGaps(parsedResume, parsedJD);
@@ -111,8 +116,11 @@ async function optimizeResumeUploadHandler(req, res, next) {
       return res.status(400).json({ success: false, error: 'PDF file is required (field: "resume").' });
     }
 
-    // Map from both camelCase and snake_case for robust integration, default to general analysis if omitted
-    const job_description = req.body.job_description || req.body.jobDescription || 'General Industry Professional Role. Optimize resume for general industry best practices without a specific target.';
+    const raw_jd = req.body.job_description || req.body.jobDescription;
+    const isGeneral = !raw_jd || raw_jd.trim().length < 10;
+    const job_description = isGeneral 
+      ? "GENERAL_OPTIMIZATION_REQUEST: No specific job description provided. Evaluate based on general resume standards and industry best practices for the candidate's field."
+      : raw_jd;
 
 
     const resumeText = await extractTextFromPDF(req.file.buffer);

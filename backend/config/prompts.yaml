@@ -109,6 +109,11 @@ gapAnalysis:
       "match_percentage": number
     }
 
+    SPECIAL INSTRUCTION: If the Parsed Job Description (JD) contains "isGeneral: true" or indicates a "GENERAL_OPTIMIZATION_REQUEST", do not report "missing" skills from the JD. Instead:
+    - Focus on "General Resume Health": missing metrics, weak action verbs, formatting issues, or missing standard professional sections.
+    - Set "match_percentage" as a "General Professional Readiness" score.
+    - List standard industry skills the candidate might be missing for their field (inferred from the resume).
+
 # ─── Resume Optimizer ─────────────────────────────────────────
 optimizer:
   system: |
@@ -181,6 +186,12 @@ scoring:
       "top_improvements": string[],
       "verdict": "strong" | "good" | "fair" | "weak"
     }
+
+    SPECIAL INSTRUCTION: If the Job Description contains "isGeneral: true" or is a "GENERAL_OPTIMIZATION_REQUEST":
+    - Overall score represents "Resume Quality Score".
+    - keyword_match (0-35): Score based on general industry keyword density for their field.
+    - relevance (0-30): Score based on how clearly the resume communicates value and impact.
+    - All other dimensions remain based on general best practices.
 
     Scoring rubric:
     - keyword_match  (0–35): exact and semantic keyword overlap
