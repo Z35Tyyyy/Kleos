@@ -155,8 +155,8 @@ const Status = () => {
                     )}
                 </div>
                 
-                <p className="mt-8 text-center text-on-surface-variant/40 text-[10px] uppercase tracking-[0.2em]">
-                    Encrypted Connection • Secure AI Pipeline • Kleos Cloud
+                <p className="mt-8 text-center text-on-surface-variant/40 text-[10px] uppercase tracking-[0.3em] font-medium">
+                    © 2026 KLEOS.AI. CARVED BY Z35TYYYY
                 </p>
             </div>
         </div>
