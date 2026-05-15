@@ -52,11 +52,29 @@ app.use('/api',  resumeRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {
+  const mongoose = require('mongoose');
+  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  const geminiReady = !!process.env.GEMINI_API_KEY;
+  const groqReady = !!process.env.GROQ_API_KEY;
+
+  let overallStatus = 'online';
+  if (dbStatus !== 'connected' || !geminiReady) {
+    overallStatus = 'degraded';
+  }
+  if (dbStatus !== 'connected' && !geminiReady && !groqReady) {
+    overallStatus = 'offline';
+  }
+
   res.json({
-    status   : 'ok',
+    status   : overallStatus,
     service  : 'AI Resume Optimizer',
     version  : '1.0.0',
     timestamp: new Date().toISOString(),
+    details: {
+      database: dbStatus,
+      gemini: geminiReady ? 'ready' : 'missing_key',
+      groq: groqReady ? 'ready' : 'missing_key',
+    },
     frontend : process.env.FRONTEND_URL || 'Not configured',
     env      : process.env.NODE_ENV || 'development'
   });

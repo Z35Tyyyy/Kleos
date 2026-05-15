@@ -77,43 +77,58 @@ const Status = () => {
                         <div className="space-y-12">
                             {/* Hero Status */}
                             <div className="text-center">
-                                <div className="inline-flex items-center gap-3 px-4 py-2 bg-success-container/10 border border-success/20 rounded-full text-success text-xs font-bold tracking-widest uppercase mb-6">
-                                    <span className="w-2 h-2 bg-success rounded-full animate-ping"></span>
-                                    All Systems Operational
+                                <div className={`inline-flex items-center gap-3 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-6 ${
+                                    status.status === 'online' 
+                                    ? 'bg-success-container/10 border border-success/20 text-success' 
+                                    : 'bg-warning-container/10 border border-warning/20 text-warning'
+                                }`}>
+                                    <span className={`w-2 h-2 rounded-full ${status.status === 'online' ? 'bg-success animate-ping' : 'bg-warning animate-pulse'}`}></span>
+                                    {status.status === 'online' ? 'System Online / Ready' : 'System Degraded'}
                                 </div>
                                 <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-4">
-                                    Operational Stability: 100%
+                                    Operational Stability: {status.status === 'online' ? '100%' : '60%'}
                                 </h1>
                                 <p className="text-on-surface-variant">
-                                    Real-time telemetry from the AI Resume Optimizer nodes.
+                                    Dynamic telemetry verifying AI nodes and database connectivity.
                                 </p>
                             </div>
 
-                            {/* Stats Grid */}
+                            {/* Node Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="p-6 bg-surface-container rounded-2xl border border-outline-variant/5">
-                                    <div className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Service Status</div>
-                                    <div className="text-2xl font-bold text-white flex items-center gap-2">
-                                        {status.status === 'ok' ? 'Online' : 'Degraded'}
-                                        <span className="text-success text-sm font-normal tracking-normal">(2ms latency)</span>
+                                    <div className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 flex justify-between">
+                                        Database Node
+                                        <span className={`w-2 h-2 rounded-full ${status.details.database === 'connected' ? 'bg-success' : 'bg-error'}`}></span>
+                                    </div>
+                                    <div className="text-2xl font-bold text-white capitalize">
+                                        {status.details.database}
                                     </div>
                                 </div>
                                 <div className="p-6 bg-surface-container rounded-2xl border border-outline-variant/5">
-                                    <div className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Environment</div>
+                                    <div className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 flex justify-between">
+                                        Primary AI (Gemini)
+                                        <span className={`w-2 h-2 rounded-full ${status.details.gemini === 'ready' ? 'bg-success' : 'bg-error'}`}></span>
+                                    </div>
+                                    <div className="text-2xl font-bold text-white capitalize">
+                                        {status.details.gemini.replace('_', ' ')}
+                                    </div>
+                                </div>
+                                <div className="p-6 bg-surface-container rounded-2xl border border-outline-variant/5">
+                                    <div className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 flex justify-between">
+                                        Fallback AI (Groq)
+                                        <span className={`w-2 h-2 rounded-full ${status.details.groq === 'ready' ? 'bg-success' : 'bg-error'}`}></span>
+                                    </div>
+                                    <div className="text-2xl font-bold text-white capitalize">
+                                        {status.details.groq.replace('_', ' ')}
+                                    </div>
+                                </div>
+                                <div className="p-6 bg-surface-container rounded-2xl border border-outline-variant/5">
+                                    <div className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 flex justify-between">
+                                        Environment
+                                        <span className="w-2 h-2 rounded-full bg-primary"></span>
+                                    </div>
                                     <div className="text-2xl font-bold text-white capitalize">
                                         {status.env}
-                                    </div>
-                                </div>
-                                <div className="p-6 bg-surface-container rounded-2xl border border-outline-variant/5">
-                                    <div className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Engine Version</div>
-                                    <div className="text-2xl font-bold text-white">
-                                        v{status.version}
-                                    </div>
-                                </div>
-                                <div className="p-6 bg-surface-container rounded-2xl border border-outline-variant/5">
-                                    <div className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Uptime Monitor</div>
-                                    <div className="text-2xl font-bold text-white">
-                                        Active
                                     </div>
                                 </div>
                             </div>
