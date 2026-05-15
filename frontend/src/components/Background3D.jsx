@@ -50,7 +50,6 @@ const Blob = ({ position, color, speed, distort }) => {
                     color={color}
                     speed={speed}
                     distort={distort}
-                    radius={1}
                     transparent
                     opacity={0.15}
                 />
@@ -61,23 +60,23 @@ const Blob = ({ position, color, speed, distort }) => {
 
 const Background3D = () => {
     return (
-        <div className="fixed inset-0 -z-20 bg-[#0A0A0A]">
-            <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={1} />
+        <div className="fixed inset-0 -z-10 bg-[#060606]">
+            <Canvas camera={{ position: [0, 0, 5], fov: 75 }} dpr={[1, 2]}>
+                <ambientLight intensity={0.8} />
+                <pointLight position={[10, 10, 10]} intensity={1.5} />
+                <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
                 
-                <ParticleField count={400} />
+                <ParticleField count={600} />
                 
-                <Blob position={[-3, 2, -2]} color="#FF2D55" speed={2} distort={0.4} />
-                <Blob position={[3, -2, -3]} color="#FF6B8B" speed={1.5} distort={0.5} />
+                <Blob position={[-3, 2, -2]} color="#FF2D55" speed={2} distort={0.5} />
+                <Blob position={[3, -2, -3]} color="#FF6B8B" speed={1.5} distort={0.6} />
+                <Blob position={[0, 0, -5]} color="#40000C" speed={1} distort={0.3} />
                 
                 {/* Neural grid floor effect */}
                 <gridHelper 
-                    args={[20, 20, '#FF2D55', '#1A1A1A']} 
-                    position={[0, -4, 0]} 
+                    args={[40, 40, '#FF2D55', '#111111']} 
+                    position={[0, -5, 0]} 
                     rotation={[0, 0, 0]} 
-                    transparent
-                    opacity={0.1}
                 />
             </Canvas>
         </div>

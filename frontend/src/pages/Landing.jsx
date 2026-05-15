@@ -48,7 +48,7 @@ const Landing = () => {
     };
 
     return (
-        <div className="bg-[#0A0A0A] text-[#E5E2E1] font-['Plus_Jakarta_Sans'] overflow-x-hidden min-h-screen relative">
+        <div className="text-[#E5E2E1] font-['Plus_Jakarta_Sans'] overflow-x-hidden min-h-screen relative">
             <Suspense fallback={null}>
                 <Background3D />
             </Suspense>
