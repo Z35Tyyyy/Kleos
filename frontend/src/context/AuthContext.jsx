@@ -23,12 +23,13 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const loginUser = useCallback((token, userData) => {
+    const loginUser = useCallback((token, userData, refreshToken) => {
         if (!token || !userData) {
             console.error("Attempted to login with missing token or user data");
             return;
         }
         localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
     }, []);
@@ -40,6 +41,7 @@ export const AuthProvider = ({ children }) => {
             console.error(e);
         } finally {
             localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
             localStorage.removeItem('user');
             setUser(null);
         }

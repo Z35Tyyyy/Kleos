@@ -21,10 +21,10 @@ const Auth = () => {
         try {
             if (isLogin) {
                 const data = await login(email, password);
-                loginUser(data.token, data.user);
+                loginUser(data.token, data.user, data.refreshToken);
             } else {
                 const data = await register(name, email, password);
-                loginUser(data.token, data.user);
+                loginUser(data.token, data.user, data.refreshToken);
             }
             navigate('/dashboard');
         } catch (err) {

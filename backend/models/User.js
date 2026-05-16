@@ -62,16 +62,11 @@ userSchema.virtual('isLocked').get(function () {
 });
 
 // ── Pre-save: hash password ───────────────────────────────────────────────────
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   // Only hash if passwordHash was modified (or is new)
-  if (!this.isModified('passwordHash') || !this.passwordHash) return next();
+  if (!this.isModified('passwordHash') || !this.passwordHash) return;
   
-  try {
-    this.passwordHash = await bcrypt.hash(this.passwordHash, SALT_ROUNDS);
-    next();
-  } catch (err) {
-    next(err);
-  }
+  this.passwordHash = await bcrypt.hash(this.passwordHash, SALT_ROUNDS);
 });
 
 // ── Methods ───────────────────────────────────────────────────────────────────

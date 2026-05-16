@@ -17,12 +17,7 @@ const OAuthCallback = () => {
             try {
                 const userData = JSON.parse(userRaw);
                 // Call context auth login (which persists directly to localStorage)
-                loginUser(accessToken, userData);
-                
-                // If we also want to persist refreshToken for the API layer:
-                if (refreshToken) {
-                    localStorage.setItem('refreshToken', refreshToken);
-                }
+                loginUser(accessToken, userData, refreshToken);
                 
                 // Route into the app
                 navigate('/dashboard', { replace: true });
