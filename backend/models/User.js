@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const bcrypt   = require('bcryptjs');
+const crypto   = require('crypto');
 
 const SALT_ROUNDS        = 12;
 const MAX_LOGIN_ATTEMPTS = parseInt(process.env.MAX_LOGIN_ATTEMPTS, 10) || 5;
@@ -61,10 +62,16 @@ userSchema.virtual('isLocked').get(function () {
 });
 
 // ── Pre-save: hash password ───────────────────────────────────────────────────
-userSchema.pre('save', async function () {
+userSchema.pre('save', async function (next) {
   // Only hash if passwordHash was modified (or is new)
-  if (!this.isModified('passwordHash') || !this.passwordHash) return;
-  this.passwordHash = await bcrypt.hash(this.passwordHash, SALT_ROUNDS);
+  if (!this.isModified('passwordHash') || !this.passwordHash) return next();
+  
+  try {
+    this.passwordHash = await bcrypt.hash(this.passwordHash, SALT_ROUNDS);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 // ── Methods ───────────────────────────────────────────────────────────────────
@@ -93,15 +100,17 @@ userSchema.methods.recordSuccessfulLogin = async function () {
 
 /** Add a refresh token (hash it first). Evict oldest if over limit. */
 userSchema.methods.addRefreshToken = async function (rawToken, device, expiresAt) {
-  const hashed = await bcrypt.hash(rawToken, 10);
+  const hashed = crypto.createHash('sha256').update(rawToken).digest('hex');
 
   // Evict expired tokens
   this.refreshTokens = this.refreshTokens.filter((t) => t.expiresAt > new Date());
 
   // Evict oldest if at session limit
-  while (this.refreshTokens.length >= MAX_SESSIONS) {
+  if (this.refreshTokens.length >= MAX_SESSIONS) {
     this.refreshTokens.sort((a, b) => a.createdAt - b.createdAt);
-    this.refreshTokens.shift();
+    while (this.refreshTokens.length >= MAX_SESSIONS) {
+      this.refreshTokens.shift();
+    }
   }
 
   this.refreshTokens.push({ token: hashed, device, expiresAt });
@@ -110,13 +119,13 @@ userSchema.methods.addRefreshToken = async function (rawToken, device, expiresAt
 
 /** Find and remove a matching refresh token. Returns true if found. */
 userSchema.methods.consumeRefreshToken = async function (rawToken) {
-  for (let i = 0; i < this.refreshTokens.length; i++) {
-    const match = await bcrypt.compare(rawToken, this.refreshTokens[i].token);
-    if (match) {
-      this.refreshTokens.splice(i, 1);
-      await this.save();
-      return true;
-    }
+  const hashed = crypto.createHash('sha256').update(rawToken).digest('hex');
+  const index  = this.refreshTokens.findIndex((t) => t.token === hashed);
+
+  if (index !== -1) {
+    this.refreshTokens.splice(index, 1);
+    await this.save();
+    return true;
   }
   return false;
 };

@@ -4,7 +4,7 @@ const jwt    = require('jsonwebtoken');
 const User   = require('../models/User');
 const logger = require('../utils/logger');
 
-const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'dev-access-secret-change-me';
+const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 
 /**
  * authenticate — verify JWT access token and attach req.user

@@ -24,6 +24,10 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const loginUser = useCallback((token, userData) => {
+        if (!token || !userData) {
+            console.error("Attempted to login with missing token or user data");
+            return;
+        }
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);

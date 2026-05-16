@@ -6,10 +6,14 @@ const User   = require('../models/User');
 const logger = require('../utils/logger');
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const ACCESS_SECRET      = process.env.JWT_ACCESS_SECRET  || 'dev-access-secret-change-me';
-const REFRESH_SECRET     = process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-change-me';
+const ACCESS_SECRET      = process.env.JWT_ACCESS_SECRET;
+const REFRESH_SECRET     = process.env.JWT_REFRESH_SECRET;
 const ACCESS_EXPIRES_IN  = process.env.JWT_ACCESS_EXPIRES_IN  || '15m';
 const REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
+
+if (!ACCESS_SECRET || !REFRESH_SECRET) {
+  logger.error('JWT secrets not set! Authentication will fail.');
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -48,9 +52,11 @@ async function register(req, res, next) {
   try {
     const { email, password, name } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ success: false, error: 'Email and password are required.' });
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ success: false, error: 'Email and password must be strings.' });
     }
+
+    const sanitizedEmail = email.toLowerCase().trim();
 
     if (!PASSWORD_REGEX.test(password)) {
       return res.status(400).json({
@@ -59,15 +65,15 @@ async function register(req, res, next) {
       });
     }
 
-    const existing = await User.findOne({ email: email.toLowerCase() });
+    const existing = await User.findOne({ email: sanitizedEmail });
     if (existing) {
       return res.status(409).json({ success: false, error: 'Email already registered.' });
     }
 
     const user = await User.create({
-      email       : email.toLowerCase(),
+      email       : sanitizedEmail,
       passwordHash: password,  // pre-save hook hashes it
-      name        : name || '',
+      name        : (typeof name === 'string' ? name.trim() : ''),
     });
 
     const accessToken  = generateAccessToken(user);
@@ -95,11 +101,13 @@ async function login(req, res, next) {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ success: false, error: 'Email and password are required.' });
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ success: false, error: 'Email and password must be strings.' });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const sanitizedEmail = email.toLowerCase().trim();
+
+    const user = await User.findOne({ email: sanitizedEmail });
     if (!user) {
       return res.status(401).json({ success: false, error: 'Invalid credentials.' });
     }

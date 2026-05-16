@@ -11,9 +11,13 @@ export const login = async (email, password) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Login failed');
-    return data;
+    const resData = await response.json();
+    if (!response.ok) throw new Error(resData.error || 'Login failed');
+    return {
+        token: resData.data.accessToken,
+        user: resData.data.user,
+        refreshToken: resData.data.refreshToken
+    };
 };
 
 export const register = async (name, email, password) => {
@@ -22,9 +26,13 @@ export const register = async (name, email, password) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Registration failed');
-    return data;
+    const resData = await response.json();
+    if (!response.ok) throw new Error(resData.error || 'Registration failed');
+    return {
+        token: resData.data.accessToken,
+        user: resData.data.user,
+        refreshToken: resData.data.refreshToken
+    };
 };
 
 export const logout = async () => {
